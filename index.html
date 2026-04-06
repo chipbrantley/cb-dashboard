@@ -1,0 +1,449 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chip's Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1c1814;--paper:#f4efe4;--cream:#ece6d8;--warm-mid:#b8a98a;--accent:#b5501e;--green:#3d6b4a;--yellow:#b8880e;--red:#a82828;--muted:#7a7060;--rule:#d8d0c0;--blocked:#5a5248;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;}
+.masthead{background:var(--ink);color:var(--paper);padding:18px 28px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--accent);}
+.mt{font-family:'Playfair Display',serif;font-size:26px;line-height:1;}
+.mt span{color:var(--accent);font-style:italic;}
+.ms{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--warm-mid);letter-spacing:.1em;text-transform:uppercase;margin-top:4px;}
+.btn{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--warm-mid);background:transparent;color:var(--warm-mid);cursor:pointer;transition:all .2s;}
+.btn:hover{border-color:var(--paper);color:var(--paper);}
+.btn-pri{background:var(--accent);border-color:var(--accent);color:white;}
+.btn-pri:hover{background:#8a3c14;border-color:#8a3c14;}
+.main{max-width:1200px;margin:0 auto;padding:20px 22px 60px;}
+.slabel{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding-bottom:8px;border-bottom:1px solid var(--rule);margin-bottom:12px;}
+.top-strip{display:grid;grid-template-columns:1fr 170px 190px 200px;gap:12px;margin-bottom:20px;}
+.tc{padding:14px 16px;display:flex;flex-direction:column;justify-content:center;}
+.tc.dark{background:var(--ink);color:var(--paper);}
+.tc.cream{background:var(--cream);border:1px solid var(--rule);}
+.tc.orange{background:var(--accent);color:white;}
+.tc.green{background:var(--green);color:white;}
+.tc-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;opacity:.65;margin-bottom:5px;}
+.tc-val{font-family:'Playfair Display',serif;font-size:20px;line-height:1.2;}
+.tc-sub{font-size:11px;opacity:.72;margin-top:4px;}
+.habits-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px;}
+.habit{display:flex;align-items:center;gap:8px;padding:7px 14px;background:var(--cream);border:1px solid var(--rule);cursor:pointer;user-select:none;transition:all .15s;}
+.habit:hover{border-color:var(--accent);}
+.habit.done{background:var(--ink);border-color:var(--ink);color:var(--paper);}
+.hdot{width:7px;height:7px;border-radius:50%;border:1.5px solid var(--muted);flex-shrink:0;transition:all .15s;}
+.habit.done .hdot{background:var(--accent);border-color:var(--accent);}
+.hname{font-size:12px;font-weight:500;}
+.htime{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);}
+.habit.done .htime{color:var(--warm-mid);}
+.week-row{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px;}
+.wday{background:var(--cream);border:1px solid var(--rule);padding:8px 7px;min-height:120px;display:flex;flex-direction:column;gap:3px;}
+.wday.today{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.wday-hdr{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.wday.today .wday-hdr{color:var(--accent);}
+.we{font-size:10px;line-height:1.3;padding:2px 5px;border-radius:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ew{background:rgba(181,80,30,.14);color:#8a3c14;}
+.eb{background:rgba(184,136,14,.18);color:#7a5a00;}
+.ec{background:rgba(30,80,160,.12);color:#1a4a9a;}
+.es{background:var(--accent);color:white;font-weight:600;}
+.ewl{background:rgba(61,107,74,.14);color:var(--green);}
+.eblk{background:repeating-linear-gradient(45deg,rgba(90,82,72,.09),rgba(90,82,72,.09) 2px,transparent 2px,transparent 6px);color:var(--blocked);border:1px solid rgba(90,82,72,.22);font-style:italic;}
+.wday.today .ew{background:rgba(181,80,30,.32);color:#f0a070;}
+.wday.today .eb{background:rgba(184,136,14,.35);color:#e8c060;}
+.wday.today .ec{background:rgba(30,80,160,.28);color:#7090e8;}
+.wday.today .ewl{background:rgba(61,107,74,.32);color:#7ebd8f;}
+.wday.today .eblk{background:repeating-linear-gradient(45deg,rgba(255,255,255,.06),rgba(255,255,255,.06) 2px,transparent 2px,transparent 6px);color:#a09080;border-color:rgba(160,144,128,.3);}
+.ev-more{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);padding:1px 5px;}
+.wday.today .ev-more{color:var(--warm-mid);}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px;padding:8px 12px;background:var(--cream);border:1px solid var(--rule);}
+.li{display:flex;align-items:center;gap:5px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+.ld{width:9px;height:9px;border-radius:1px;flex-shrink:0;}
+.ss{background:var(--ink);padding:14px 18px;margin-bottom:22px;}
+.ss .slabel{color:var(--warm-mid);border-color:#3a3530;}
+.tblocks{display:flex;flex-wrap:wrap;gap:2px;}
+.tb{flex:1;min-width:78px;padding:7px 9px;border-left:2px solid #3a3530;}
+.tb.now{border-left-color:var(--accent);background:rgba(181,80,30,.13);}
+.tb-t{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--warm-mid);margin-bottom:3px;}
+.tb-n{font-size:11px;color:var(--paper);line-height:1.35;white-space:pre-line;}
+.tb.now .tb-n{color:#f0c8a8;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:22px;}
+.uitem{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--rule);}
+.uitem:last-child{border-bottom:none;}
+.udate{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);min-width:68px;flex-shrink:0;}
+.utime{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--warm-mid);min-width:58px;flex-shrink:0;}
+.uname{font-size:12px;font-weight:500;flex:1;}
+.uname.blk{font-style:italic;color:var(--muted);font-weight:400;}
+.utag{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:2px 6px;margin-left:6px;flex-shrink:0;}
+.notes-area{width:100%;min-height:80px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;background:var(--cream);border:1px solid var(--rule);color:var(--ink);padding:10px 12px;outline:none;resize:vertical;line-height:1.6;}
+.notes-area:focus{border-color:var(--accent);}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px;}
+.pc{background:var(--cream);border:1px solid var(--rule);display:flex;flex-direction:column;}
+.pc-top{padding:12px 14px 10px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:flex-start;}
+.pname{font-family:'Playfair Display',serif;font-size:15px;line-height:1.2;}
+.pname em{font-style:italic;}
+.ptag{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;white-space:nowrap;margin-left:8px;flex-shrink:0;}
+.ta{background:var(--green);color:white;}.tw{background:var(--yellow);color:white;}.ts{background:var(--red);color:white;}.tq{background:var(--muted);color:white;}
+.pc-body{padding:10px 14px;flex:1;display:flex;flex-direction:column;gap:8px;}
+.pfl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px;}
+.pnxt{font-size:12px;line-height:1.5;}
+.pc-foot{padding:8px 14px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.plast{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);}
+.ebtn{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--rule);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;}
+.ebtn:hover{border-color:var(--accent);color:var(--accent);}
+.overlay{display:none;position:fixed;inset:0;background:rgba(28,24,20,.72);z-index:200;align-items:center;justify-content:center;}
+.overlay.open{display:flex;}
+.modal{background:var(--paper);border:1px solid var(--rule);padding:24px;width:460px;max-width:96vw;max-height:88vh;overflow-y:auto;}
+.modal-title{font-family:'Playfair Display',serif;font-size:19px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--rule);}
+.modal label{display:block;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;}
+.modal select,.modal textarea,.modal input[type=text]{width:100%;font-family:'IBM Plex Sans',sans-serif;font-size:13px;background:var(--cream);border:1px solid var(--rule);color:var(--ink);padding:7px 10px;outline:none;}
+.modal select:focus,.modal textarea:focus,.modal input:focus{border-color:var(--accent);}
+.modal textarea{resize:vertical;}
+.mfoot{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
+.bsave{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:7px 18px;background:var(--ink);color:var(--paper);border:none;cursor:pointer;}
+.bcancel{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:7px 18px;background:transparent;color:var(--muted);border:1px solid var(--rule);cursor:pointer;}
+.auth-banner{background:var(--yellow);color:white;padding:10px 22px;font-size:13px;display:flex;align-items:center;gap:12px;}
+.cal-status{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--warm-mid);margin-left:8px;}
+@media(max-width:700px){.top-strip{grid-template-columns:1fr 1fr;}.two-col{grid-template-columns:1fr;}.week-row{grid-template-columns:repeat(4,1fr);}}
+@media print{.btn,.ebtn,.overlay,.auth-banner{display:none!important;}body{background:white;}.masthead,.ss{-webkit-print-color-adjust:exact;print-color-adjust:exact;}.pc,.wday,.habit{break-inside:avoid;}}
+</style>
+</head>
+<body>
+
+<div id="auth-banner" class="auth-banner" style="display:none;">
+  <span>📅 Calendar not connected.</span>
+  <button class="btn btn-pri" onclick="connectCalendar()" style="padding:4px 12px;">Connect Google Calendar</button>
+</div>
+
+<div class="masthead">
+  <div>
+    <div class="mt">Chip <span>Brantley</span> — Dashboard</div>
+    <div class="ms" id="today-sub"></div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <span class="cal-status" id="cal-status">Loading calendar…</span>
+    <button class="btn" onclick="window.print()">⎙ Print</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="top-strip">
+    <div class="tc dark"><div class="tc-lbl">Today</div><div class="tc-val" id="today-val"></div><div class="tc-sub" id="today-note"></div></div>
+    <div class="tc orange"><div class="tc-lbl">Next Spiraling</div><div class="tc-val" id="spiral-val"></div><div class="tc-sub">Wednesday publish</div></div>
+    <div class="tc cream"><div class="tc-lbl">Teaching</div><div class="tc-val">Wind-down</div><div class="tc-sub">Semester ends late April</div></div>
+    <div class="tc green"><div class="tc-lbl">White Lies</div><div class="tc-val">Ramp-up</div><div class="tc-sub" id="wl-sub">Full production → late Apr</div></div>
+  </div>
+
+  <div class="slabel">Daily Habits — tap to mark done</div>
+  <div class="habits-row" id="habits-row"></div>
+
+  <div class="ss"><div class="slabel">Daily Time Structure</div><div class="tblocks" id="tblocks"></div></div>
+
+  <div class="slabel">This Week — live from Google Calendar</div>
+  <div class="week-row" id="week-row"></div>
+  <div class="legend">
+    <div class="li"><div class="ld" style="background:rgba(181,80,30,.55)"></div>Work / meetings</div>
+    <div class="li"><div class="ld" style="background:rgba(61,107,74,.55)"></div>White Lies</div>
+    <div class="li"><div class="ld" style="background:rgba(184,136,14,.55)"></div>Board</div>
+    <div class="li"><div class="ld" style="background:rgba(30,80,160,.45)"></div>Class</div>
+    <div class="li"><div class="ld" style="background:var(--accent)"></div>Spiraling</div>
+    <div class="li"><div class="ld" style="background:repeating-linear-gradient(45deg,rgba(90,82,72,.35),rgba(90,82,72,.35) 2px,transparent 2px,transparent 5px);border:1px solid rgba(90,82,72,.3)"></div>Blocked / unavailable</div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="slabel">Coming Up (next 7 days)</div>
+      <div id="upcoming"></div>
+    </div>
+    <div>
+      <div class="slabel">Today's Notes & Intentions</div>
+      <textarea class="notes-area" id="notes" placeholder="What do you want to accomplish today? What's working on you?"></textarea>
+      <div style="margin-top:8px;display:flex;gap:8px;align-items:center;">
+        <button class="btn btn-pri" onclick="saveNotes()">Save</button>
+        <span id="saved-msg" style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);display:none;">Saved ✓</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="slabel">Projects — click Edit to update status</div>
+  <div class="pgrid" id="pgrid"></div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-title" id="mtitle">Edit</div>
+    <label>Status</label>
+    <select id="ms"><option value="active">Active — in motion</option><option value="watch">Watch — needs attention soon</option><option value="stalled">Stalled — nothing moved</option><option value="steady">Steady — on track</option></select>
+    <label>Next action</label><textarea id="mn" rows="3"></textarea>
+    <label>Last touched</label><input type="text" id="ml" placeholder="e.g. Today, Yesterday, Mon Apr 6…">
+    <label>Notes (optional)</label><textarea id="mo" rows="2"></textarea>
+    <div class="mfoot"><button class="bcancel" onclick="closeM()">Cancel</button><button class="bsave" onclick="saveM()">Save</button></div>
+  </div>
+</div>
+
+<script>
+const NOW=new Date();
+const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const fmt=d=>`${MONS[d.getMonth()]} ${d.getDate()}`;
+const localDate=`${NOW.getFullYear()}-${String(NOW.getMonth()+1).padStart(2,'0')}-${String(NOW.getDate()).padStart(2,'0')}`;
+
+function ld(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+
+// ── TOP ──
+document.getElementById('today-val').textContent=DAYS[NOW.getDay()];
+document.getElementById('today-sub').textContent=`${fmt(NOW)}, ${NOW.getFullYear()}`;
+const dw=(()=>{const d=NOW.getDay(),diff=(3-d+7)%7;return diff===0?7:diff;})();
+document.getElementById('spiral-val').textContent=dw===0?'Today!':`${dw} day${dw!==1?'s':''} away`;
+
+// ── HABITS ──
+const HABITS=[
+  {id:'meditate',name:'Meditate',time:'15 min'},
+  {id:'stoic',name:'Lemon water + Stoic',time:'10 min'},
+  {id:'draw',name:'Draw something',time:'10–15 min'},
+  {id:'anatomy',name:'Anatomy entry',time:'10–20 min'},
+  {id:'french',name:'French',time:'5–10 min'},
+  {id:'read',name:'Read (focused)',time:'30 min'},
+  {id:'exercise',name:'Exercise',time:'60–90 min'},
+  {id:'organize',name:'Organize something',time:'10 min'},
+  {id:'dishes',name:'Dishes + kitchen',time:'30 min'},
+];
+const hkey=`h-${localDate}`;
+let hs=ld(hkey,{});
+function rHabits(){
+  const r=document.getElementById('habits-row');r.innerHTML='';
+  HABITS.forEach(h=>{
+    const done=!!hs[h.id];
+    const el=document.createElement('div');el.className=`habit${done?' done':''}`;
+    el.innerHTML=`<div class="hdot"></div><span class="hname">${h.name}</span><span class="htime">${h.time}</span>`;
+    el.onclick=()=>{hs[h.id]=!done;sv(hkey,hs);rHabits();};
+    r.appendChild(el);
+  });
+}
+rHabits();
+
+// ── SCHEDULE ──
+const SCHED=[
+  {t:'~5:30',n:'Wake · meditate\nlemon water · Stoic'},
+  {t:'~6:00',n:'Draw · anatomy\nentry · French'},
+  {t:'7:00–8:30',n:'Boys up · breakfast\n· school prep'},
+  {t:'8:30–10:00',n:'Exercise\n(60–90 min)'},
+  {t:'10:00–10:30',n:'Shower +\nget dressed'},
+  {t:'10:30–11:00',n:'Read (focused)\n30 min'},
+  {t:'11:00–1:00',n:'Work block ①\nmain project'},
+  {t:'1:00–2:00',n:'Lunch'},
+  {t:'2:00–4:00',n:'Work block ②\nmain project'},
+  {t:'4:00–5:00',n:'Small tasks'},
+  {t:'5:00–5:30',n:'Plan tomorrow\n+ shutdown'},
+  {t:'5:30–7:30',n:'Dinner + errands\n/ leisure'},
+  {t:'7:30–8:00',n:'Organize · dishes\n+ kitchen'},
+  {t:'10:30–11:15',n:'🌙 Night work\nwindow'},
+];
+function curBlock(){
+  const h=NOW.getHours(),m=NOW.getMinutes(),t=h*60+m;
+  return [[330,360],[360,420],[420,510],[510,600],[600,630],[630,660],[660,780],[780,840],[840,960],[960,1020],[1020,1050],[1050,1170],[1170,1200],[1350,1395]].findIndex(([s,e])=>t>=s&&t<e);
+}
+(()=>{
+  const w=document.getElementById('tblocks'),c=curBlock();
+  SCHED.forEach((b,i)=>{const el=document.createElement('div');el.className=`tb${i===c?' now':''}`;el.innerHTML=`<div class="tb-t">${b.t}</div><div class="tb-n">${b.n}</div>`;w.appendChild(el);});
+})();
+
+// ── GOOGLE CALENDAR AUTH ──
+const CLIENT_ID='142462421541-1p8a2ld5288kld6pcqcie3s4m8htv3ih.apps.googleusercontent.com';
+const REDIRECT_URI='https://cb-dash.netlify.app/auth/callback';
+const SCOPES='https://www.googleapis.com/auth/calendar.readonly';
+
+function connectCalendar(){
+  const url=`https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=${encodeURIComponent(SCOPES)}&access_type=offline&prompt=consent`;
+  window.location.href=url;
+}
+
+// ── CALENDAR FETCHING ──
+const WL_CALENDAR_ID='fqnreq6svm452i0eakfsgkobj0@group.calendar.google.com';
+
+// Categorise events from primary calendar
+function categorise(event){
+  const s=(event.summary||'').toLowerCase();
+  if(s.includes('jcm')||s.includes('class')||s.includes('capstone')) return 'c';
+  if(s.includes('one place')||s.includes('op exec')||s.includes('board')) return 'b';
+  if(s.includes('spiraling')||s.includes('🌀')) return 's';
+  if(s.includes('baseball')||s.includes('soccer')||s.includes('tennis')||
+     s.includes('prom')||s.includes('gala')||s.includes('dentist')||
+     s.includes('houseclean')||s.includes('altamont')||s.includes('nico')||
+     s.includes('angus')||s.includes('nicholas')||s.includes('concert')||
+     s.includes('t1d')) return 'x';
+  return 'w';
+}
+
+function fmtTime(dt){
+  if(!dt) return '';
+  const d=new Date(dt);
+  let h=d.getHours(),m=d.getMinutes(),ampm=h>=12?'PM':'AM';
+  h=h%12||12;
+  return m===0?`${h} ${ampm}`:`${h}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+
+function getEvtDate(evt){
+  return (evt.start.date||evt.start.dateTime||'').slice(0,10);
+}
+
+async function loadCalendar(){
+  const token=localStorage.getItem('gcal_refresh_token');
+  if(!token){
+    document.getElementById('auth-banner').style.display='flex';
+    document.getElementById('cal-status').textContent='Not connected';
+    renderWeekStatic();
+    renderUpcomingStatic();
+    return;
+  }
+
+  document.getElementById('cal-status').textContent='Fetching…';
+  try{
+    const res=await fetch(`/api/calendar?refresh_token=${encodeURIComponent(token)}`);
+    if(!res.ok) throw new Error('API error');
+    const data=await res.json();
+
+    const primary=(data.primary||[]).map(e=>({
+      date:getEvtDate(e),
+      time:e.start.dateTime?fmtTime(e.start.dateTime):'',
+      name:e.summary||'(no title)',
+      cat:categorise(e)
+    }));
+
+    const whiteLies=(data.whiteLies||[]).map(e=>({
+      date:getEvtDate(e),
+      time:e.start.dateTime?fmtTime(e.start.dateTime):'',
+      name:e.summary||'(no title)',
+      cat:'wl'
+    }));
+
+    const allEvts=[...primary,...whiteLies].sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||''));
+
+    // Add Spiraling Wednesdays
+    const ws=new Date(NOW);ws.setDate(ws.getDate()-ws.getDay());
+    for(let i=0;i<3;i++){
+      const wed=new Date(ws);wed.setDate(ws.getDate()+3+(i*7));
+      const ds=`${wed.getFullYear()}-${String(wed.getMonth()+1).padStart(2,'0')}-${String(wed.getDate()).padStart(2,'0')}`;
+      if(!allEvts.find(e=>e.date===ds&&e.cat==='s')){
+        allEvts.push({date:ds,time:'',name:'🌀 Spiraling publishes',cat:'s'});
+      }
+    }
+
+    document.getElementById('cal-status').textContent='✓ Live';
+    document.getElementById('auth-banner').style.display='none';
+
+    // Today note
+    const todayWork=allEvts.filter(e=>e.date===localDate&&e.time&&e.cat!=='x');
+    document.getElementById('today-note').textContent=todayWork.length
+      ?todayWork[0].name+(todayWork.length>1?` · +${todayWork.length-1} more`:'')
+      :'No work events today';
+
+    // WL out-of-town flag
+    if(allEvts.some(e=>e.date===localDate&&e.cat==='wl'&&(e.name.toLowerCase().includes('abg')||e.name.toLowerCase().includes('out of town'))))
+      document.getElementById('wl-sub').textContent='⚠ ABG out of town';
+
+    renderWeek(allEvts);
+    renderUpcoming(allEvts);
+
+  }catch(err){
+    document.getElementById('cal-status').textContent='Error — refresh?';
+    console.error(err);
+    renderWeekStatic();
+    renderUpcomingStatic();
+  }
+}
+
+// ── WEEK GRID ──
+function renderWeek(evts){
+  const w=document.getElementById('week-row');w.innerHTML='';
+  const ws=new Date(NOW);ws.setDate(ws.getDate()-ws.getDay());ws.setHours(0,0,0,0);
+  const cls={w:'ew',b:'eb',c:'ec',s:'es',wl:'ewl',x:'eblk'};
+  for(let i=0;i<7;i++){
+    const d=new Date(ws);d.setDate(ws.getDate()+i);
+    const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const isT=ds===localDate;
+    const dayEvts=evts.filter(e=>e.date===ds);
+    const el=document.createElement('div');el.className=`wday${isT?' today':''}`;
+    let h=`<div class="wday-hdr">${DS[i]} ${d.getDate()}</div>`;
+    dayEvts.slice(0,5).forEach(e=>{h+=`<div class="we ${cls[e.cat]||'ew'}" title="${e.name}">${e.name}</div>`;});
+    if(dayEvts.length>5)h+=`<div class="ev-more">+${dayEvts.length-5} more</div>`;
+    el.innerHTML=h;w.appendChild(el);
+  }
+}
+
+function renderUpcoming(evts){
+  const w=document.getElementById('upcoming');w.innerHTML='';
+  const end=new Date(NOW);end.setDate(end.getDate()+7);
+  const endStr=`${end.getFullYear()}-${String(end.getMonth()+1).padStart(2,'0')}-${String(end.getDate()).padStart(2,'0')}`;
+  const list=evts.filter(e=>e.date>=localDate&&e.date<=endStr)
+    .sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||''));
+  if(!list.length){w.innerHTML='<div style="font-size:12px;color:var(--muted);padding:8px 0;">No events in the next 7 days.</div>';return;}
+  const cc={w:['#b5501e','work'],b:['#b8880e','board'],c:['#1a4a9a','class'],s:['#b5501e','spiraling'],wl:['#3d6b4a','white lies'],x:['#5a5248','blocked']};
+  list.forEach(e=>{
+    const d=new Date(e.date+'T12:00:00');
+    const lbl=e.date===localDate?'Today':DS[d.getDay()]+' '+fmt(d);
+    const[col,cat2]=cc[e.cat]||['#7a7060',''];
+    const isX=e.cat==='x';
+    const el=document.createElement('div');el.className='uitem';
+    el.innerHTML=`<span class="udate">${lbl}</span><span class="utime">${e.time||'all day'}</span><span class="uname${isX?' blk':''}">${e.name}</span><span class="utag" style="background:${col}18;color:${col}">${cat2}</span>`;
+    w.appendChild(el);
+  });
+}
+
+// Static fallbacks (shown if not authenticated)
+function renderWeekStatic(){
+  const w=document.getElementById('week-row');w.innerHTML='';
+  const ws=new Date(NOW);ws.setDate(ws.getDate()-ws.getDay());ws.setHours(0,0,0,0);
+  for(let i=0;i<7;i++){
+    const d=new Date(ws);d.setDate(ws.getDate()+i);
+    const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const isT=ds===localDate;
+    const el=document.createElement('div');el.className=`wday${isT?' today':''}`;
+    el.innerHTML=`<div class="wday-hdr">${DS[i]} ${d.getDate()}</div><div class="we ew" style="opacity:.4">Connect calendar</div>`;
+    w.appendChild(el);
+  }
+}
+function renderUpcomingStatic(){
+  document.getElementById('upcoming').innerHTML='<div style="font-size:12px;color:var(--muted);padding:8px 0;">Connect your calendar to see upcoming events.</div>';
+}
+
+// ── NOTES ──
+const nkey=`notes-${localDate}`;
+document.getElementById('notes').value=ld(nkey,'');
+function saveNotes(){sv(nkey,document.getElementById('notes').value);const s=document.getElementById('saved-msg');s.style.display='inline';setTimeout(()=>s.style.display='none',2000);}
+document.getElementById('notes').addEventListener('blur',saveNotes);
+
+// ── PROJECTS ──
+const DEF=[
+  {id:'wl',name:'<em>White Lies</em>',status:'active',next:'Full production ramp — several hours/day starting late April. Check calendar for latest WL events.',last:'Today',notes:''},
+  {id:'sp',name:'Spiraling',status:'active',next:'Draft Wednesday anchor post (WIWO/WWOM). First issue candidate: Jakob Bernoulli / Spira Mirabilis.',last:'This week',notes:'Wed publish. $8/mo · $60/yr · $200 Nucleus tier.'},
+  {id:'pp',name:'Proximity Partners',status:'active',next:'Coffee w/ Alabama Humanities Alliance — Living Archive + statewide convening. Check calendar for Proximity monthly mtg.',last:'This week',notes:'Records project · Matt Herron project · donor outreach · 501c3 grants.'},
+  {id:'op',name:'One Place FJC',status:'steady',next:'Check calendar for next Exec Zoom and Board meeting. Prep for incoming board president year.',last:'This week',notes:'VP now → board president next year.'},
+  {id:'di',name:'Desert Island Supply Co.',status:'steady',next:'Any grant writing or design/tech help needed this week? Check in with DISCO team.',last:'This week',notes:'Board member. Grant writing + design/tech support.'},
+  {id:'cr',name:'Creative / Solo',status:'watch',next:"Nudge fiction project + magazine/podcast dump file (w/ Connor O'Neill). Aim for 1–2 check-ins this week.",last:'Check in',notes:'Fiction projects · nonfiction magazine ideas · podcast collab w/ Connor.'},
+];
+let projs=ld('projs-v7',DEF),editId=null;
+const tmap={active:['ta','Active'],watch:['tw','Watch'],stalled:['ts','Stalled'],steady:['tq','Steady']};
+function rProjs(){
+  const g=document.getElementById('pgrid');g.innerHTML='';
+  projs.forEach(p=>{
+    const[tc,tl]=tmap[p.status]||['tq','Steady'];
+    const el=document.createElement('div');el.className='pc';
+    el.innerHTML=`<div class="pc-top"><div class="pname">${p.name}</div><span class="ptag ${tc}">${tl}</span></div><div class="pc-body"><div><span class="pfl">Next action</span><div class="pnxt">${p.next}</div></div>${p.notes?`<div><span class="pfl">Notes</span><div class="pnxt" style="color:var(--muted)">${p.notes}</div></div>`:''}</div><div class="pc-foot"><span class="plast">Last: ${p.last}</span><button class="ebtn" onclick="openM('${p.id}')">Edit</button></div>`;
+    g.appendChild(el);
+  });
+}
+rProjs();
+function openM(id){editId=id;const p=projs.find(x=>x.id===id);document.getElementById('mtitle').textContent=p.name.replace(/<[^>]+>/g,'');document.getElementById('ms').value=p.status;document.getElementById('mn').value=p.next;document.getElementById('ml').value=p.last;document.getElementById('mo').value=p.notes||'';document.getElementById('overlay').classList.add('open');}
+function closeM(){document.getElementById('overlay').classList.remove('open');}
+function saveM(){const i=projs.findIndex(x=>x.id===editId);if(i>=0){projs[i].status=document.getElementById('ms').value;projs[i].next=document.getElementById('mn').value;projs[i].last=document.getElementById('ml').value;projs[i].notes=document.getElementById('mo').value;sv('projs-v7',projs);rProjs();}closeM();}
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this)closeM();});
+
+// ── INIT ──
+loadCalendar();
+</script>
+</body>
+</html>
