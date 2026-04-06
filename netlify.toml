@@ -1,6 +1,9 @@
 [build]
   functions = "netlify/functions"
 
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "GOOGLE_CLIENT_ID"
+
 [[redirects]]
   from = "/auth/callback"
   to = "/.netlify/functions/auth-callback"
