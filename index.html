@@ -235,15 +235,19 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
     </div>
     <!-- Deadline blocks injected here by JS -->
     <div id="deadline-blocks" style="display:contents;"></div>
-    <!-- Life practices — right end -->
-    <div class="tc-life">
-      <div class="tc-lbl">Life Practices — tap to mark done</div>
-      <div class="life-mini-chips" id="life-mini"></div>
-    </div>
+
+  </div>
+
+  <!-- NOTES — full width -->
+  <div class="slabel">Today's Notes & Intentions</div>
+  <textarea class="notes-area" id="notes" placeholder="What do you want to accomplish today? What's working on you?" style="margin-bottom:8px;"></textarea>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:22px;">
+    <button class="btn btn-pri" onclick="saveNotes()">Save</button>
+    <span id="saved-msg" style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);display:none;">Saved ✓</span>
   </div>
 
   <!-- DAILY HABITS -->
-  <div class="slabel">Daily Habits — tap to mark done</div>
+  <div class="slabel">Daily Habits</div>
   <div class="habits-row" id="habits-row"></div>
 
   <!-- SCHEDULE -->
@@ -261,13 +265,9 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
     <div class="li"><div class="ld" style="background:repeating-linear-gradient(45deg,rgba(90,82,72,.35),rgba(90,82,72,.35) 2px,transparent 2px,transparent 5px);border:1px solid rgba(90,82,72,.3)"></div>Blocked</div>
   </div>
 
-  <!-- NOTES — full width -->
-  <div class="slabel">Today's Notes & Intentions</div>
-  <textarea class="notes-area" id="notes" placeholder="What do you want to accomplish today? What's working on you?" style="margin-bottom:8px;"></textarea>
-  <div style="display:flex;gap:8px;align-items:center;margin-bottom:22px;">
-    <button class="btn btn-pri" onclick="saveNotes()">Save</button>
-    <span id="saved-msg" style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);display:none;">Saved ✓</span>
-  </div>
+  <!-- LIFE PRACTICES -->
+  <div class="slabel life-lbl" style="margin-top:4px;">Life Practices</div>
+  <div class="life-mini-chips" id="life-mini" style="margin-bottom:22px;"></div>
 
   <!-- COMING UP + PRIMARY WORK -->
   <div class="two-col" style="align-items:start;">
@@ -343,7 +343,7 @@ function renderDeadlineBlocks(deadlines){
     wrap.appendChild(ph);
     return;
   }
-  deadlines.slice(0,3).forEach(d=>{
+  deadlines.slice(0,6).forEach(d=>{
     const evtDate=new Date(d.date+'T12:00:00');
     const daysAway=Math.ceil((evtDate-new Date(localDate+'T00:00:00'))/(1000*60*60*24));
     const urgent=daysAway<=3;
