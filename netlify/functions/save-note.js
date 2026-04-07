@@ -28,9 +28,13 @@ exports.handler = async (event) => {
   }
 
   const { refresh_token, date, notes, habits } = body;
+  if (!refresh_token) return { statusCode: 401, body: JSON.stringify({ error: 'No refresh token' }) };
 
-  if (!refresh_token) {
-    return { statusCode: 401, body: JSON.stringify({ error: 'No refresh token' }) };
+  // Determine what we're logging
+  const hasNotes = notes && notes.trim();
+  const hasHabits = habits && Object.keys(habits).length > 0;
+  if (!hasNotes && !hasHabits) {
+    return { statusCode: 200, body: JSON.stringify({ success: true, skipped: true }) };
   }
 
   const oauth2Client = new google.auth.OAuth2(
@@ -43,27 +47,24 @@ exports.handler = async (event) => {
   try {
     const docs = google.docs({ version: 'v1', auth: oauth2Client });
 
-    // Build habit summary line
-    const habitLine = Object.entries(HABIT_NAMES)
-      .map(([id, name]) => `${habits[id] ? '✓' : '✗'} ${name}`)
-      .join('   ');
+    let entry = `\n${date}\n`;
 
-    // Format the entry
-    const dateHeader = `\n${date}\n`;
-    const habitSection = `Habits: ${habitLine}\n`;
-    const notesSection = notes && notes.trim()
-      ? `\n${notes.trim()}\n`
-      : '';
-    const divider = `\n─────────────────────────────────────────\n`;
+    if (hasHabits) {
+      const habitLine = Object.entries(HABIT_NAMES)
+        .map(([id, name]) => `${habits[id] ? '✓' : '✗'} ${name}`)
+        .join('   ');
+      entry += `Habits: ${habitLine}\n`;
+    }
 
-    const fullEntry = dateHeader + habitSection + notesSection + divider;
+    if (hasNotes) {
+      entry += `\n${notes.trim()}\n`;
+    }
 
-    // Prepend to the beginning of the doc (after title)
-    // First get the doc to find the right insertion index
+    entry += `\n─────────────────────────────────────────\n`;
+
+    // Get doc and find insertion point after title
     const docRes = await docs.documents.get({ documentId: DOC_ID });
     const content = docRes.data.body.content;
-
-    // Find index after the first paragraph (title)
     let insertIndex = 1;
     if (content && content.length > 1) {
       insertIndex = content[1].startIndex || 1;
@@ -72,14 +73,7 @@ exports.handler = async (event) => {
     await docs.documents.batchUpdate({
       documentId: DOC_ID,
       requestBody: {
-        requests: [
-          {
-            insertText: {
-              location: { index: insertIndex },
-              text: fullEntry,
-            },
-          },
-        ],
+        requests: [{ insertText: { location: { index: insertIndex }, text: entry } }],
       },
     });
 
@@ -89,9 +83,6 @@ exports.handler = async (event) => {
       body: JSON.stringify({ success: true }),
     };
   } catch (err) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: err.message }),
-    };
+    return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
   }
 };
