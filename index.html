@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -264,7 +263,7 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
 
   <!-- NOTES — full width -->
   <div class="slabel">Today's Notes & Intentions</div>
-  <textarea class="notes-area" id="notes" placeholder="How do you feel today? What's the most important thing you need to get done today?" style="margin-bottom:8px;"></textarea>
+  <textarea class="notes-area" id="notes" placeholder="What do you want to accomplish today? What's working on you?" style="margin-bottom:8px;"></textarea>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:22px;">
     <button class="btn btn-pri" onclick="saveNotes()">Save</button>
     <span id="saved-msg" style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);display:none;">Saved ✓</span>
@@ -566,8 +565,44 @@ function renderUpcomingStatic(){
 // NOTES
 const nkey=`notes-${localDate}`;
 document.getElementById('notes').value=ld(nkey,'');
-function saveNotes(){sv(nkey,document.getElementById('notes').value);const s=document.getElementById('saved-msg');s.style.display='inline';setTimeout(()=>s.style.display='none',2000);}
-document.getElementById('notes').addEventListener('blur',saveNotes);
+
+async function saveNotes(){
+  const notesText=document.getElementById('notes').value;
+  const token=localStorage.getItem('gcal_refresh_token');
+  const s=document.getElementById('saved-msg');
+
+  // Save to Google Doc if connected
+  if(token){
+    s.textContent='Saving…';s.style.display='inline';
+    try{
+      const res=await fetch('/api/save-note',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          refresh_token:token,
+          date:localDate,
+          notes:notesText,
+          habits:hs,
+        }),
+      });
+      if(res.ok){
+        s.textContent='Saved to Doc ✓';
+        document.getElementById('notes').value='';
+        sv(nkey,'');
+      } else {
+        s.textContent='Error saving';
+      }
+    }catch(err){
+      s.textContent='Error saving';
+    }
+  } else {
+    // Fallback: just save locally
+    sv(nkey,notesText);
+    s.textContent='Saved ✓';
+  }
+  s.style.display='inline';
+  setTimeout(()=>s.style.display='none',3000);
+}
 
 // PROJECTS
 const PRIMARY=[
