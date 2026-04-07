@@ -138,7 +138,7 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
 .ld{width:9px;height:9px;border-radius:1px;flex-shrink:0;}
 
 /* TWO COL */
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:22px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:22px;align-items:start;}
 .uitem{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--rule);}
 .uitem:last-child{border-bottom:none;}
 .udate{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);min-width:68px;flex-shrink:0;}
@@ -146,7 +146,7 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
 .uname{font-size:12px;font-weight:500;flex:1;}
 .uname.blk{font-style:italic;color:var(--muted);font-weight:400;}
 .utag{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:2px 6px;margin-left:6px;flex-shrink:0;}
-.notes-area{width:100%;min-height:80px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;background:var(--cream);border:1px solid var(--rule);color:var(--ink);padding:10px 12px;outline:none;resize:vertical;line-height:1.6;}
+.notes-area{width:100%;min-height:80px;max-height:120px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;background:var(--cream);border:1px solid var(--rule);color:var(--ink);padding:10px 12px;outline:none;resize:vertical;line-height:1.6;}
 .notes-area:focus{border-color:var(--accent);}
 
 /* PROJECT GRIDS */
@@ -262,8 +262,8 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
     <div class="li"><div class="ld" style="background:repeating-linear-gradient(45deg,rgba(90,82,72,.35),rgba(90,82,72,.35) 2px,transparent 2px,transparent 5px);border:1px solid rgba(90,82,72,.3)"></div>Blocked</div>
   </div>
 
-  <!-- UPCOMING + NOTES -->
-  <div class="two-col">
+  <!-- UPCOMING + NOTES + PRIMARY WORK -->
+  <div class="two-col" style="align-items:start;">
     <div>
       <div class="slabel">Coming Up (next 7 days)</div>
       <div id="upcoming"></div>
@@ -275,12 +275,10 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
         <button class="btn btn-pri" onclick="saveNotes()">Save</button>
         <span id="saved-msg" style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);display:none;">Saved ✓</span>
       </div>
+      <div class="slabel primary-lbl" style="margin-top:20px;">Primary Work</div>
+      <div class="pgrid" style="grid-template-columns:1fr;gap:10px;margin-bottom:0;" id="primary-grid"></div>
     </div>
   </div>
-
-  <!-- PRIMARY WORK -->
-  <div class="slabel primary-lbl">Primary Work — other people waiting, or weekly deadlines</div>
-  <div class="pgrid primary-grid" id="primary-grid"></div>
 
   <!-- THE PRACTICE -->
   <div class="slabel practice-lbl">The Practice — not a project, a living thing</div>
