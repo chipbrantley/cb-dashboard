@@ -441,7 +441,7 @@ function curBlock(){
 // GOOGLE CALENDAR
 const CLIENT_ID='142462421541-1p8a2ld5288kld6pcqcie3s4m8htv3ih.apps.googleusercontent.com';
 const REDIRECT_URI='https://cb-dash.netlify.app/auth/callback';
-const SCOPES='https://www.googleapis.com/auth/calendar.readonly';
+const SCOPES='https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/documents';
 function connectCalendar(){
   window.location.href=`https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=${encodeURIComponent(SCOPES)}&access_type=offline&prompt=consent`;
 }
