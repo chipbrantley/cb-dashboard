@@ -209,7 +209,7 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
 
 <div class="masthead">
   <div>
-    <div class="mt">Chip <span>Brantley</span> — Dashboard</div>
+    <div class="mt">CB <span>Dashboard</span></div>
     <div class="ms" id="today-sub"></div>
   </div>
   <div style="display:flex;gap:10px;align-items:center;">
@@ -262,20 +262,22 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
     <div class="li"><div class="ld" style="background:repeating-linear-gradient(45deg,rgba(90,82,72,.35),rgba(90,82,72,.35) 2px,transparent 2px,transparent 5px);border:1px solid rgba(90,82,72,.3)"></div>Blocked</div>
   </div>
 
-  <!-- UPCOMING + NOTES + PRIMARY WORK -->
+  <!-- NOTES — full width -->
+  <div class="slabel">Today's Notes & Intentions</div>
+  <textarea class="notes-area" id="notes" placeholder="What do you want to accomplish today? What's working on you?" style="margin-bottom:8px;"></textarea>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:22px;">
+    <button class="btn btn-pri" onclick="saveNotes()">Save</button>
+    <span id="saved-msg" style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);display:none;">Saved ✓</span>
+  </div>
+
+  <!-- COMING UP + PRIMARY WORK -->
   <div class="two-col" style="align-items:start;">
     <div>
       <div class="slabel">Coming Up (next 7 days)</div>
       <div id="upcoming"></div>
     </div>
     <div>
-      <div class="slabel">Today's Notes & Intentions</div>
-      <textarea class="notes-area" id="notes" placeholder="What do you want to accomplish today? What's working on you?"></textarea>
-      <div style="margin-top:8px;display:flex;gap:8px;align-items:center;">
-        <button class="btn btn-pri" onclick="saveNotes()">Save</button>
-        <span id="saved-msg" style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);display:none;">Saved ✓</span>
-      </div>
-      <div class="slabel primary-lbl" style="margin-top:20px;">Primary Work</div>
+      <div class="slabel primary-lbl">Primary Work</div>
       <div class="pgrid" style="grid-template-columns:1fr;gap:10px;margin-bottom:0;" id="primary-grid"></div>
     </div>
   </div>
