@@ -571,7 +571,6 @@ async function saveNotes(){
   const token=localStorage.getItem('gcal_refresh_token');
   const s=document.getElementById('saved-msg');
 
-  // Save to Google Doc if connected
   if(token){
     s.textContent='Saving…';s.style.display='inline';
     try{
@@ -582,7 +581,7 @@ async function saveNotes(){
           refresh_token:token,
           date:localDate,
           notes:notesText,
-          habits:hs,
+          habits:null, // notes-only save
         }),
       });
       if(res.ok){
@@ -596,12 +595,45 @@ async function saveNotes(){
       s.textContent='Error saving';
     }
   } else {
-    // Fallback: just save locally
     sv(nkey,notesText);
     s.textContent='Saved ✓';
   }
   s.style.display='inline';
   setTimeout(()=>s.style.display='none',3000);
+}
+
+// Log yesterday's habits if not yet logged (runs on page load)
+async function logYesterdayHabitsIfNeeded(){
+  const token=localStorage.getItem('gcal_refresh_token');
+  if(!token) return;
+
+  const yesterday=new Date(NOW);yesterday.setDate(yesterday.getDate()-1);
+  const yd=`${yesterday.getFullYear()}-${String(yesterday.getMonth()+1).padStart(2,'0')}-${String(yesterday.getDate()).padStart(2,'0')}`;
+  const loggedKey=`habits-logged-${yd}`;
+  if(ld(loggedKey,false)) return; // already logged
+
+  const yhkey=`h-${yd}`;
+  const yHabits=ld(yhkey,{});
+  // Only log if there's something to log (at least one habit was checked)
+  if(!Object.values(yHabits).some(v=>v)) return;
+
+  try{
+    const res=await fetch('/api/save-note',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        refresh_token:token,
+        date:yd,
+        notes:null, // habits-only log
+        habits:yHabits,
+      }),
+    });
+    if(res.ok){
+      sv(loggedKey,true); // mark as logged so we don't repeat
+    }
+  }catch(err){
+    console.log('Habit log error:',err);
+  }
 }
 
 // PROJECTS
@@ -700,6 +732,7 @@ function saveM(){
 document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this)closeM();});
 
 loadCalendar();
+logYesterdayHabitsIfNeeded();
 </script>
 </body>
 </html>
