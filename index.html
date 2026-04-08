@@ -147,6 +147,19 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
 .utag{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:2px 6px;margin-left:6px;flex-shrink:0;}
 .notes-area{width:100%;min-height:80px;max-height:120px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;background:var(--cream);border:1px solid var(--rule);color:var(--ink);padding:10px 12px;outline:none;resize:vertical;line-height:1.6;}
 .notes-area:focus{border-color:var(--accent);}
+.notes-display{
+  width:100%;min-height:80px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;
+  background:var(--cream);border:1px solid var(--rule);color:var(--ink);
+  padding:10px 12px;line-height:1.6;white-space:pre-wrap;word-wrap:break-word;
+  margin-bottom:8px;
+}
+.notes-edit-link{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);cursor:pointer;
+  text-decoration:none;border-bottom:1px solid var(--rule);
+  transition:color .15s;
+}
+.notes-edit-link:hover{color:var(--accent);border-color:var(--accent);}
 
 /* PROJECT GRIDS */
 .pgrid{display:grid;gap:14px;margin-bottom:28px;}
@@ -240,10 +253,14 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
 
   <!-- NOTES — full width -->
   <div class="slabel">Today's Notes & Intentions</div>
+  <div id="notes-display" class="notes-display" style="display:none;"></div>
   <textarea class="notes-area" id="notes" placeholder="What do you want to accomplish today? What's working on you?" style="margin-bottom:8px;"></textarea>
-  <div style="display:flex;gap:8px;align-items:center;margin-bottom:22px;">
+  <div id="notes-controls" style="display:flex;gap:12px;align-items:center;margin-bottom:22px;">
     <button class="btn btn-pri" onclick="saveNotes()">Save</button>
     <span id="saved-msg" style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);display:none;">Saved ✓</span>
+  </div>
+  <div id="notes-edit-row" style="display:none;margin-bottom:22px;">
+    <span class="notes-edit-link" onclick="editNotes()">+ Add another entry</span>
   </div>
 
   <!-- DAILY HABITS -->
@@ -564,7 +581,33 @@ function renderUpcomingStatic(){
 
 // NOTES
 const nkey=`notes-${localDate}`;
-document.getElementById('notes').value=ld(nkey,'');
+const savedNote=ld(nkey,'');
+
+function showNoteDisplay(text){
+  document.getElementById('notes-display').textContent=text;
+  document.getElementById('notes-display').style.display='block';
+  document.getElementById('notes').style.display='none';
+  document.getElementById('notes-controls').style.display='none';
+  document.getElementById('notes-edit-row').style.display='block';
+}
+function showNoteEditor(){
+  document.getElementById('notes-display').style.display='none';
+  document.getElementById('notes').style.display='block';
+  document.getElementById('notes-controls').style.display='flex';
+  document.getElementById('notes-edit-row').style.display='none';
+}
+function editNotes(){
+  document.getElementById('notes').value='';
+  showNoteEditor();
+  document.getElementById('notes').focus();
+}
+
+// On load: if there's a saved entry today, show it as display
+if(savedNote && savedNote.trim()){
+  showNoteDisplay(savedNote);
+} else {
+  document.getElementById('notes').value='';
+}
 
 async function saveNotes(){
   const notesText=document.getElementById('notes').value;
@@ -586,8 +629,10 @@ async function saveNotes(){
       });
       if(res.ok){
         s.textContent='Saved to Doc ✓';
+        const savedText=notesText;
         document.getElementById('notes').value='';
-        sv(nkey,'');
+        sv(nkey,savedText);
+        showNoteDisplay(savedText);
       } else {
         s.textContent='Error saving';
       }
@@ -597,6 +642,7 @@ async function saveNotes(){
   } else {
     sv(nkey,notesText);
     s.textContent='Saved ✓';
+    showNoteDisplay(notesText);
   }
   s.style.display='inline';
   setTimeout(()=>s.style.display='none',3000);
