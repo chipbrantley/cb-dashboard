@@ -581,7 +581,8 @@ function renderUpcomingStatic(){
 
 // NOTES
 const nkey=`notes-${localDate}`;
-const savedNote=ld(nkey,'');
+const ndkey=`notes-display-${localDate}`; // separate key for display text
+const savedNote=ld(ndkey,'');
 
 function showNoteDisplay(text){
   document.getElementById('notes-display').textContent=text;
@@ -602,11 +603,11 @@ function editNotes(){
   document.getElementById('notes').focus();
 }
 
-// On load: if there's a saved entry today, show it as display
+// On load: if there's a saved display entry today, show it
 if(savedNote && savedNote.trim()){
   showNoteDisplay(savedNote);
 } else {
-  document.getElementById('notes').value='';
+  document.getElementById('notes').value=ld(nkey,'');
 }
 
 async function saveNotes(){
@@ -631,7 +632,8 @@ async function saveNotes(){
         s.textContent='Saved to Doc ✓';
         const savedText=notesText;
         document.getElementById('notes').value='';
-        sv(nkey,savedText);
+        sv(nkey,''); // clear editable copy
+        sv(ndkey,savedText); // persist display copy
         showNoteDisplay(savedText);
       } else {
         s.textContent='Error saving';
@@ -640,7 +642,8 @@ async function saveNotes(){
       s.textContent='Error saving';
     }
   } else {
-    sv(nkey,notesText);
+    sv(nkey,'');
+    sv(ndkey,notesText);
     s.textContent='Saved ✓';
     showNoteDisplay(notesText);
   }
