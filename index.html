@@ -528,8 +528,9 @@ async function loadCalendar(){
     const todayWork=allEvts.filter(e=>e.date===localDate&&e.time&&e.cat!=='x');
     document.getElementById('today-evt').textContent=todayWork.length?todayWork[0].name+(todayWork.length>1?` +${todayWork.length-1}`:''):'';
 
-    if(allEvts.some(e=>e.date===localDate&&e.cat==='wl'&&(e.name.toLowerCase().includes('abg')||e.name.toLowerCase().includes('out of town'))))
-      document.getElementById('wl-sub').textContent='⚠ ABG out of town';
+    const wlSub=document.getElementById('wl-sub');
+    if(wlSub&&allEvts.some(e=>e.date===localDate&&e.cat==='wl'&&(e.name.toLowerCase().includes('abg')||e.name.toLowerCase().includes('out of town'))))
+      wlSub.textContent='⚠ ABG out of town';
 
     renderWeek(allEvts);renderUpcoming(allEvts);
   }catch(err){
