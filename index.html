@@ -91,14 +91,14 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
 .lmc.done{background:var(--green);border-color:var(--green);color:white;}
 
 /* HABITS */
-.habits-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px;}
-.habit{display:flex;align-items:center;gap:8px;padding:7px 14px;background:var(--cream);border:1px solid var(--rule);cursor:pointer;user-select:none;transition:all .15s;}
+.habits-row{display:flex;flex-wrap:nowrap;gap:4px;margin-bottom:22px;overflow-x:auto;}
+.habit{display:flex;align-items:center;gap:5px;padding:5px 10px;background:var(--cream);border:1px solid var(--rule);cursor:pointer;user-select:none;transition:all .15s;white-space:nowrap;}
 .habit:hover{border-color:var(--accent);}
 .habit.done{background:var(--ink);border-color:var(--ink);color:var(--paper);}
 .hdot{width:7px;height:7px;border-radius:50%;border:1.5px solid var(--muted);flex-shrink:0;}
 .habit.done .hdot{background:var(--accent);border-color:var(--accent);}
-.hname{font-size:12px;font-weight:500;}
-.htime{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);}
+.hname{font-size:11px;font-weight:500;}
+.htime{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);}
 .habit.done .htime{color:var(--warm-mid);}
 
 /* SCHEDULE */
@@ -112,12 +112,12 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
 .tb.now .tb-n{color:#f0c8a8;}
 
 /* WEEK */
-.week-row{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px;}
-.wday{background:var(--cream);border:1px solid var(--rule);padding:8px 7px;min-height:110px;display:flex;flex-direction:column;gap:3px;}
+.week-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:6px;}
+.wday{background:var(--cream);border:1px solid var(--rule);padding:12px 14px;min-height:160px;display:flex;flex-direction:column;gap:4px;}
 .wday.today{background:var(--ink);color:var(--paper);border-color:var(--ink);}
 .wday-hdr{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
 .wday.today .wday-hdr{color:var(--accent);}
-.we{font-size:10px;line-height:1.3;padding:2px 5px;border-radius:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.we{font-size:11px;line-height:1.4;padding:3px 8px;border-radius:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .ew{background:rgba(181,80,30,.14);color:#8a3c14;}
 .eb{background:rgba(184,136,14,.18);color:#7a5a00;}
 .ec{background:rgba(30,80,160,.12);color:#1a4a9a;}
@@ -147,6 +147,17 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
 .utag{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:2px 6px;margin-left:6px;flex-shrink:0;}
 .notes-area{width:100%;min-height:80px;max-height:120px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;background:var(--cream);border:1px solid var(--rule);color:var(--ink);padding:10px 12px;outline:none;resize:vertical;line-height:1.6;}
 .notes-area:focus{border-color:var(--accent);}
+.tasks-list{display:flex;flex-direction:column;gap:6px;}
+.task-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--rule);cursor:pointer;user-select:none;}
+.task-item:last-child{border-bottom:none;}
+.task-item.completing{opacity:.4;transition:opacity .3s;}
+.task-check{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--muted);flex-shrink:0;margin-top:2px;transition:all .15s;}
+.task-item:hover .task-check{border-color:var(--green);}
+.task-title{font-size:12px;line-height:1.5;flex:1;}
+.task-due{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--accent);margin-top:2px;}
+.task-due.overdue{color:var(--red);}
+.tasks-empty{font-size:12px;color:var(--muted);padding:8px 0;font-style:italic;}
+.tasks-loading{font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;padding:8px 0;}
 .notes-display{
   width:100%;
   font-family:'Libre Baskerville',Baskerville,'Book Antiqua',Georgia,serif;
@@ -297,11 +308,11 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
   <div class="slabel life-lbl" style="margin-top:4px;">Life Practices</div>
   <div class="life-mini-chips" id="life-mini" style="margin-bottom:22px;"></div>
 
-  <!-- COMING UP + PRIMARY WORK -->
+  <!-- TASKS + PRIMARY WORK -->
   <div class="two-col" style="align-items:start;">
     <div>
-      <div class="slabel">Coming Up (next 7 days)</div>
-      <div id="upcoming"></div>
+      <div class="slabel">My Tasks</div>
+      <div id="tasks-list" class="tasks-list"><div class="tasks-loading">Loading tasks…</div></div>
     </div>
     <div>
       <div class="slabel primary-lbl">Primary Work</div>
@@ -469,7 +480,7 @@ function curBlock(){
 // GOOGLE CALENDAR
 const CLIENT_ID='142462421541-1p8a2ld5288kld6pcqcie3s4m8htv3ih.apps.googleusercontent.com';
 const REDIRECT_URI='https://cb-dash.netlify.app/auth/callback';
-const SCOPES='https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/documents';
+const SCOPES='https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/tasks';
 function connectCalendar(){
   window.location.href=`https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=${encodeURIComponent(SCOPES)}&access_type=offline&prompt=consent`;
 }
@@ -543,17 +554,16 @@ async function loadCalendar(){
 
 function renderWeek(evts){
   const w=document.getElementById('week-row');w.innerHTML='';
-  const ws=new Date(NOW);ws.setDate(ws.getDate()-ws.getDay());ws.setHours(0,0,0,0);
   const cls={w:'ew',b:'eb',c:'ec',s:'es',wl:'ewl',x:'eblk'};
-  for(let i=0;i<7;i++){
-    const d=new Date(ws);d.setDate(ws.getDate()+i);
+  const labels=['Today','Tomorrow','In 2 days'];
+  for(let i=0;i<3;i++){
+    const d=new Date(NOW);d.setDate(NOW.getDate()+i);
     const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    const isT=ds===localDate;
     const dayEvts=evts.filter(e=>e.date===ds);
-    const el=document.createElement('div');el.className=`wday${isT?' today':''}`;
-    let h=`<div class="wday-hdr">${DS[i]} ${d.getDate()}</div>`;
-    dayEvts.slice(0,4).forEach(e=>{h+=`<div class="we ${cls[e.cat]||'ew'}" title="${e.name}">${e.name}</div>`;});
-    if(dayEvts.length>4)h+=`<div class="ev-more">+${dayEvts.length-4} more</div>`;
+    const el=document.createElement('div');el.className=`wday${i===0?' today':''}`;
+    let h=`<div class="wday-hdr">${labels[i]} — ${DS[d.getDay()]} ${fmt(d)}</div>`;
+    dayEvts.forEach(e=>{h+=`<div class="we ${cls[e.cat]||'ew'}" title="${e.name}">${e.name}</div>`;});
+    if(!dayEvts.length)h+=`<div style="font-size:11px;color:var(--muted);padding:4px 0;font-style:italic;">Nothing scheduled</div>`;
     el.innerHTML=h;w.appendChild(el);
   }
 }
@@ -578,13 +588,11 @@ function renderUpcoming(evts){
 
 function renderWeekStatic(){
   const w=document.getElementById('week-row');w.innerHTML='';
-  const ws=new Date(NOW);ws.setDate(ws.getDate()-ws.getDay());ws.setHours(0,0,0,0);
-  for(let i=0;i<7;i++){
-    const d=new Date(ws);d.setDate(ws.getDate()+i);
-    const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    const isT=ds===localDate;
-    const el=document.createElement('div');el.className=`wday${isT?' today':''}`;
-    el.innerHTML=`<div class="wday-hdr">${DS[i]} ${d.getDate()}</div><div class="we ew" style="opacity:.4">Connect calendar</div>`;
+  const labels=['Today','Tomorrow','In 2 days'];
+  for(let i=0;i<3;i++){
+    const d=new Date(NOW);d.setDate(NOW.getDate()+i);
+    const el=document.createElement('div');el.className=`wday${i===0?' today':''}`;
+    el.innerHTML=`<div class="wday-hdr">${labels[i]} — ${DS[d.getDay()]} ${fmt(d)}</div><div class="we ew" style="opacity:.4">Connect calendar</div>`;
     w.appendChild(el);
   }
 }
@@ -793,8 +801,59 @@ function saveM(){
 }
 document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this)closeM();});
 
+// GOOGLE TASKS
+async function loadTasks(){
+  const token=localStorage.getItem('gcal_refresh_token');
+  const w=document.getElementById('tasks-list');
+  if(!token){w.innerHTML='<div class="tasks-empty">Connect calendar to see tasks.</div>';return;}
+  try{
+    const res=await fetch(`/api/tasks?refresh_token=${encodeURIComponent(token)}`);
+    if(!res.ok)throw new Error('Tasks API error');
+    const data=await res.json();
+    const tasks=data.tasks||[];
+    w.innerHTML='';
+    if(!tasks.length){
+      w.innerHTML='<div class="tasks-empty">No tasks — you're clear.</div>';return;
+    }
+    tasks.forEach(t=>{
+      const el=document.createElement('div');
+      el.className='task-item';
+      el.dataset.id=t.id;
+      const due=t.due?new Date(t.due):null;
+      const dueStr=due?`${MONS[due.getMonth()]} ${due.getDate()}`:'';
+      const overdue=due&&due<NOW;
+      el.innerHTML=`<div class="task-check"></div><div><div class="task-title">${t.title}</div>${dueStr?`<div class="task-due${overdue?' overdue':''}">${overdue?'Overdue: ':'Due: '}${dueStr}</div>`:''}</div>`;
+      el.onclick=()=>completeTask(t.id,el);
+      w.appendChild(el);
+    });
+  }catch(err){
+    w.innerHTML='<div class="tasks-empty">Could not load tasks.</div>';
+    console.error('Tasks error:',err);
+  }
+}
+
+async function completeTask(taskId,el){
+  const token=localStorage.getItem('gcal_refresh_token');
+  if(!token)return;
+  el.classList.add('completing');
+  try{
+    const res=await fetch('/api/tasks',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({refresh_token:token,task_id:taskId}),
+    });
+    if(res.ok){
+      setTimeout(()=>{el.remove();
+        if(!document.querySelector('.task-item'))
+          document.getElementById('tasks-list').innerHTML='<div class="tasks-empty">No tasks — you're clear.</div>';
+      },300);
+    } else {el.classList.remove('completing');}
+  }catch(err){el.classList.remove('completing');}
+}
+
 loadCalendar();
 logYesterdayHabitsIfNeeded();
+loadTasks();
 </script>
 </body>
 </html>
