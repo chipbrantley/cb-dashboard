@@ -534,6 +534,7 @@ async function loadCalendar(){
     renderWeek(allEvts);renderUpcoming(allEvts);
   }catch(err){
     document.getElementById('cal-status').textContent='Error — refresh?';
+    console.error('Calendar render error:', err.message, err.stack);
     renderDeadlineBlocks(null);
     renderWeekStatic();renderUpcomingStatic();
   }
