@@ -510,7 +510,7 @@ async function loadCalendar(){
     document.getElementById('auth-banner').style.display='flex';
     document.getElementById('cal-status').textContent='Not connected';
     renderDeadlineBlocks(null);
-    renderWeekStatic();renderUpcomingStatic();return;
+    renderWeekStatic();return;
   }
   document.getElementById('cal-status').textContent='Fetching…';
   try{
@@ -543,12 +543,12 @@ async function loadCalendar(){
     if(wlSub&&allEvts.some(e=>e.date===localDate&&e.cat==='wl'&&(e.name.toLowerCase().includes('abg')||e.name.toLowerCase().includes('out of town'))))
       wlSub.textContent='⚠ ABG out of town';
 
-    renderWeek(allEvts);renderUpcoming(allEvts);
+    renderWeek(allEvts);
   }catch(err){
     document.getElementById('cal-status').textContent='Error — refresh?';
     console.error('Calendar render error:', err.message, err.stack);
     renderDeadlineBlocks(null);
-    renderWeekStatic();renderUpcomingStatic();
+    renderWeekStatic();
   }
 }
 
