@@ -813,7 +813,7 @@ async function loadTasks(){
     const tasks=data.tasks||[];
     w.innerHTML='';
     if(!tasks.length){
-      w.innerHTML='<div class="tasks-empty">No tasks — you're clear.</div>';return;
+      w.innerHTML='<div class="tasks-empty">No tasks — all clear.</div>';return;
     }
     tasks.forEach(t=>{
       const el=document.createElement('div');
@@ -845,7 +845,7 @@ async function completeTask(taskId,el){
     if(res.ok){
       setTimeout(()=>{el.remove();
         if(!document.querySelector('.task-item'))
-          document.getElementById('tasks-list').innerHTML='<div class="tasks-empty">No tasks — you're clear.</div>';
+          document.getElementById('tasks-list').innerHTML='<div class="tasks-empty">No tasks — all clear.</div>';
       },300);
     } else {el.classList.remove('completing');}
   }catch(err){el.classList.remove('completing');}
