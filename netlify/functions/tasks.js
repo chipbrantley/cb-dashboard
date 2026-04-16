@@ -44,6 +44,7 @@ exports.handler = async (event) => {
 
     const items = (res.data.items || [])
       .filter(t => t.status !== 'completed')
+      .sort((a, b) => (a.position || '').localeCompare(b.position || ''))
       .map(t => ({
         id: t.id,
         title: t.title,
