@@ -383,8 +383,11 @@ function renderDeadlineBlocks(deadlines){
     return;
   }
   deadlines.slice(0,6).forEach(d=>{
+    // Compare date strings directly to avoid UTC offset issues
+    const tomorrow=new Date(NOW);tomorrow.setDate(NOW.getDate()+1);
+    const tomorrowStr=`${tomorrow.getFullYear()}-${String(tomorrow.getMonth()+1).padStart(2,'0')}-${String(tomorrow.getDate()).padStart(2,'0')}`;
+    const daysAway=d.date===localDate?0:d.date===tomorrowStr?1:2;
     const evtDate=new Date(d.date+'T12:00:00');
-    const daysAway=Math.ceil((evtDate-new Date(localDate+'T00:00:00'))/(1000*60*60*24));
     const urgent=daysAway<=3;
     const dateLabel=daysAway===0?'Today':daysAway===1?'Tomorrow':`${DS[evtDate.getDay()]} ${fmt(evtDate)}`;
     const el=document.createElement('div');
