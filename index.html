@@ -320,9 +320,7 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
     </div>
   </div>
 
-  <!-- THE PRACTICE -->
-  <div class="slabel practice-lbl">The Practice — not a project, a living thing</div>
-  <div class="pgrid" style="grid-template-columns:1fr;margin-bottom:28px;" id="practice-grid"></div>
+
 
   <!-- THE QUEUE -->
   <div class="slabel queue-lbl">The Queue — needs a nudge, not a sprint</div>
@@ -722,21 +720,20 @@ const PRIMARY=[
   {id:'sp',  name:'Spiraling',status:'active',
    next:'Wednesday anchor post (WIWO/WWOM). First issue candidate: Jakob Bernoulli / Spira Mirabilis.',
    last:'This week',notes:'$8/mo · $60/yr · $200 Nucleus. Wed publish.'},
+  {id:'owner',name:'Owner / Duck / Magna Carta',status:'active',
+   next:'Protected time — not a deadline, a practice. Flesh out recent notes. Digitize the Duck oral history.',
+   last:'Check in',notes:'24 years of Owner. Duck oral history (fake, Bakersfield, undigitized). ASCA fellowship pending.'},
+  {id:'mw',  name:'Mineral Wells',status:'watch',
+   next:'7 pages/week via 1-2-7-14. Apply the system. Track pages written this week.',
+   last:'Check in',notes:'Screenplay. 1-2-7-14: read 1 script, watch 2 movies, write 7 pages, 14 hrs planning/week.'},
   {id:'pp',  name:'Proximity Partners',status:'active',
    next:'Selma Records · Herron Living Archive · Selma Exhibit · Selling Herron Prints. Donor outreach, grants, rights negotiations. Follow up w/ Kessler.',
    last:'This week',notes:'501c3 active. Coffee w/ Alabama Humanities Alliance (Chuck & Laura).'},
   {id:'wdl', name:'Whisper Down the Lane',status:'watch',
    next:'Waiting on Pushkin. Pitch Apple + NPR. Follow up with Matthew Kessler (The Wiregrass) re: companion piece. Nudge weekly.',
    last:'This week',notes:'Bearded Door w/ Connor O\'Neill. 200GB discovery file. Strong reporting in hand.'},
-  {id:'mw',  name:'Mineral Wells',status:'watch',
-   next:'7 pages/week via 1-2-7-14. Apply the system. Track pages written this week.',
-   last:'Check in',notes:'Screenplay. 1-2-7-14: read 1 script, watch 2 movies, write 7 pages, 14 hrs planning/week.'},
 ];
-const PRACTICE=[
-  {id:'owner',name:'Owner / Duck / Magna Carta',status:'active',
-   next:'Protected time — not a deadline, a practice. Flesh out recent notes. Digitize the Duck oral history.',
-   last:'Check in',notes:'24 years of Owner. Duck oral history (fake, Bakersfield, undigitized). ASCA fellowship pending.'},
-];
+const PRACTICE=[];
 const QUEUE=[
   {id:'nyer',  name:'NYer Cartoons',status:'watch',
    next:'Stop iterating. Assemble a batch of 10 and submit. Annotated spiral + "little birdie" ideas are strong.',
