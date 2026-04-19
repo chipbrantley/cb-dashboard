@@ -772,11 +772,9 @@ function buildCard(p,cardClass){
 
 function rProjs(){
   const pg=document.getElementById('primary-grid');
-  const prac=document.getElementById('practice-grid');
   const qg=document.getElementById('queue-grid');
-  pg.innerHTML='';prac.innerHTML='';qg.innerHTML='';
+  pg.innerHTML='';qg.innerHTML='';
   PRIMARY.forEach(def=>{const p=allProjects.find(x=>x.id===def.id)||def;pg.appendChild(buildCard(p,'primary-card'));});
-  PRACTICE.forEach(def=>{const p=allProjects.find(x=>x.id===def.id)||def;prac.appendChild(buildCard(p,'practice-card'));});
   QUEUE.forEach(def=>{const p=allProjects.find(x=>x.id===def.id)||def;qg.appendChild(buildCard(p,'queue-card'));});
 }
 rProjs();
