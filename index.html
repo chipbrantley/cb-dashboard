@@ -91,14 +91,14 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--
 .lmc.done{background:var(--green);border-color:var(--green);color:white;}
 
 /* HABITS */
-.habits-row{display:flex;flex-wrap:nowrap;gap:4px;margin-bottom:22px;overflow-x:auto;}
-.habit{display:flex;align-items:center;gap:5px;padding:5px 10px;background:var(--cream);border:1px solid var(--rule);cursor:pointer;user-select:none;transition:all .15s;white-space:nowrap;}
+.habits-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px;}
+.habit{display:flex;align-items:center;gap:7px;padding:7px 16px;background:var(--cream);border:1px solid var(--rule);cursor:pointer;user-select:none;transition:all .15s;white-space:nowrap;}
 .habit:hover{border-color:var(--accent);}
 .habit.done{background:var(--ink);border-color:var(--ink);color:var(--paper);}
 .hdot{width:7px;height:7px;border-radius:50%;border:1.5px solid var(--muted);flex-shrink:0;}
 .habit.done .hdot{background:var(--accent);border-color:var(--accent);}
-.hname{font-size:11px;font-weight:500;}
-.htime{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);}
+.hname{font-size:12px;font-weight:500;}
+.htime{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);}
 .habit.done .htime{color:var(--warm-mid);}
 
 /* SCHEDULE */
@@ -399,16 +399,20 @@ function renderDeadlineBlocks(deadlines){
 
 // HABITS
 const HABITS=[
-  {id:'lemon',   name:'Lemon water',       time:'1 min'},
-  {id:'stoic',   name:'Stoic',             time:'1 min'},
-  {id:'bear',    name:'Bear',              time:'1 min'},
-  {id:'moby',   name:'Moby Dick',         time:'5 min'},
-  {id:'french', name:'French',            time:'10 min'},
-  {id:'draw',   name:'Draw',              time:'15 min'},
-  {id:'meditate',name:'Meditate',         time:'5–15 min'},
-  {id:'anatomy',name:'Anatomy',            time:'10–20 min'},
-  {id:'exercise',name:'Exercise',         time:'60–90 min'},
-  {id:'stretch', name:'Stretch',           time:'10 min'},
+  {id:'lemon',   name:'Lemon water',   time:'1 min'},
+  {id:'stoic',   name:'Stoic',         time:'1 min'},
+  {id:'bear',    name:'Bear',          time:'1 min'},
+  {id:'moby',    name:'Moby Dick',     time:'5 min'},
+  {id:'french',  name:'French',        time:'10 min'},
+  {id:'draw',    name:'Draw',          time:'15 min'},
+  {id:'meditate',name:'Meditate',      time:'5–15 min'},
+  {id:'anatomy', name:'Anatomy',       time:'10–20 min'},
+  {id:'exercise',name:'Exercise',      time:'60–90 min'},
+  {id:'stretch', name:'Stretch',       time:'10 min'},
+  {id:'w-wl',    name:'White Lies',    time:'wrote?'},
+  {id:'w-sp',    name:'Spiraling',     time:'wrote?'},
+  {id:'w-mw',    name:'Mineral Wells', time:'wrote?'},
+  {id:'w-owner', name:'Owner',         time:'wrote?'},
 ];
 const hkey=`h-${localDate}`;
 let hs=ld(hkey,{});
@@ -423,6 +427,7 @@ function rHabits(){
   });
 }
 rHabits();
+
 
 // LIFE PRACTICES (mini chips in top strip)
 const LIFE_PRACTICES=[
